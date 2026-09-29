@@ -1,0 +1,102 @@
+[
+  {
+    "id": "NEW-01",
+    "date": "2026-07-12",
+    "service": "ledger-service",
+    "alert": "ledger-service: worker restart loop with growing processing backlog",
+    "logs": "2026-07-12T08:10:10Z ledger-service-node-1 WARN background processing backlog continues to increase\n2026-07-12T08:11:21Z ledger-service-node-2 ERROR worker failed while processing an incoming event\n2026-07-12T08:12:32Z ledger-service-node-3 WARN retry threshold reached for a processing task\n2026-07-12T08:13:43Z ledger-service-node-4 ERROR processing loop terminated unexpectedly",
+    "truth_family": "kafka_poison",
+    "truth_root_cause": "A poison message with a malformed payload crashed the consumer on every retry, so consumer lag kept growing",
+    "truth_fix": "Moved the offending offset to the dead-letter topic, restarted the consumer group, and added schema validation before publishing"
+  },
+  {
+    "id": "NEW-02",
+    "date": "2026-07-17",
+    "service": "search-indexer",
+    "alert": "search-indexer: background jobs failing during output operations",
+    "logs": "2026-07-17T08:11:10Z search-indexer-node-1 WARN local write operations are taking longer than normal\n2026-07-17T08:12:21Z search-indexer-node-2 ERROR application failed while writing required output\n2026-07-17T08:13:32Z search-indexer-node-3 WARN scheduled task did not complete within its execution window\n2026-07-17T08:14:43Z search-indexer-node-4 ERROR temporary output operation failed",
+    "truth_family": "disk_full",
+    "truth_root_cause": "The node disk filled up because log rotation was misconfigured after a base image change",
+    "truth_fix": "Re-enabled logrotate with 7 day retention, cleared old logs, and added a disk usage alert at 80 percent"
+  },
+  {
+    "id": "NEW-03",
+    "date": "2026-08-01",
+    "service": "payments-api",
+    "alert": "payments-api: elevated 5xx errors and rising latency under load",
+    "logs": "2026-08-01T08:12:10Z payments-api-node-1 WARN request latency increased above the normal service budget\n2026-08-01T08:13:21Z payments-api-node-2 ERROR upstream operation timed out while handling request\n2026-08-01T08:14:32Z payments-api-node-3 WARN active requests are queueing behind slow operations\n2026-08-01T08:15:43Z payments-api-node-4 ERROR request failed after repeated backend timeouts",
+    "truth_family": "db_pool",
+    "truth_root_cause": "Database connection pool exhausted because connections leaked behind slow queries that never timed out",
+    "truth_fix": "Raised the pool limit to 50, enabled idle-connection reaping, and added a 5 second statement timeout"
+  },
+  {
+    "id": "NEW-04",
+    "date": "2026-08-07",
+    "service": "auth-gateway",
+    "alert": "auth-gateway: downstream response times increased sharply",
+    "logs": "2026-08-07T08:13:10Z auth-gateway-node-1 WARN downstream response time increased above the normal range\n2026-08-07T08:14:21Z auth-gateway-node-2 ERROR request exceeded dependency timeout budget\n2026-08-07T08:15:32Z auth-gateway-node-3 WARN repeated backend requests detected during traffic spike\n2026-08-07T08:16:43Z auth-gateway-node-4 ERROR request failed after downstream retries were exhausted",
+    "truth_family": "redis_eviction",
+    "truth_root_cause": "Redis reached maxmemory and evicted hot keys, causing a cache stampede onto the primary database",
+    "truth_fix": "Added TTL jitter, switched the eviction policy to allkeys-lru, raised maxmemory, and added request coalescing on hot keys"
+  },
+  {
+    "id": "NEW-05",
+    "date": "2026-08-15",
+    "service": "auth-gateway",
+    "alert": "auth-gateway: service-to-service requests failing without a new release",
+    "logs": "2026-08-15T08:14:10Z auth-gateway-node-1 WARN downstream integration response rate dropped sharply\n2026-08-15T08:15:21Z auth-gateway-node-2 ERROR request to dependency was rejected\n2026-08-15T08:16:32Z auth-gateway-node-3 WARN authorization failures increased across multiple instances\n2026-08-15T08:17:43Z auth-gateway-node-4 ERROR retry budget exhausted while contacting dependency",
+    "truth_family": "expired_cert",
+    "truth_root_cause": "An internal TLS certificate or service secret expired because the scheduled rotation job had been failing silently",
+    "truth_fix": "Rotated the certificate manually, fixed the rotation job permissions, and added an expiry alert at 14 days"
+  },
+  {
+    "id": "NEW-06",
+    "date": "2026-08-19",
+    "service": "checkout-service",
+    "alert": "checkout-service: backend latency spike with elevated request failures",
+    "logs": "2026-08-19T08:15:10Z checkout-service-node-1 WARN downstream response time increased above the normal range\n2026-08-19T08:16:21Z checkout-service-node-2 ERROR request exceeded dependency timeout budget\n2026-08-19T08:17:32Z checkout-service-node-3 WARN repeated backend requests detected during traffic spike\n2026-08-19T08:18:43Z checkout-service-node-4 ERROR request failed after downstream retries were exhausted",
+    "truth_family": "redis_eviction",
+    "truth_root_cause": "Redis reached maxmemory and evicted hot keys, causing a cache stampede onto the primary database",
+    "truth_fix": "Added TTL jitter, switched the eviction policy to allkeys-lru, raised maxmemory, and added request coalescing on hot keys"
+  },
+  {
+    "id": "NEW-07",
+    "date": "2026-08-29",
+    "service": "checkout-service",
+    "alert": "checkout-service: intermittent request failures and increasing p99 latency",
+    "logs": "2026-08-29T08:16:10Z checkout-service-node-1 WARN request latency increased above the normal service budget\n2026-08-29T08:17:21Z checkout-service-node-2 ERROR upstream operation timed out while handling request\n2026-08-29T08:18:32Z checkout-service-node-3 WARN active requests are queueing behind slow operations\n2026-08-29T08:19:43Z checkout-service-node-4 ERROR request failed after repeated backend timeouts",
+    "truth_family": "db_pool",
+    "truth_root_cause": "Database connection pool exhausted because connections leaked behind slow queries that never timed out",
+    "truth_fix": "Raised the pool limit to 50, enabled idle-connection reaping, and added a 5 second statement timeout"
+  },
+  {
+    "id": "NEW-08",
+    "date": "2026-09-03",
+    "service": "payments-api",
+    "alert": "payments-api: service-to-service requests failing without a new release",
+    "logs": "2026-09-03T08:17:10Z payments-api-node-1 WARN downstream integration response rate dropped sharply\n2026-09-03T08:18:21Z payments-api-node-2 ERROR request to dependency was rejected\n2026-09-03T08:19:32Z payments-api-node-3 WARN authorization failures increased across multiple instances\n2026-09-03T08:20:43Z payments-api-node-4 ERROR retry budget exhausted while contacting dependency",
+    "truth_family": "expired_cert",
+    "truth_root_cause": "An internal TLS certificate or service secret expired because the scheduled rotation job had been failing silently",
+    "truth_fix": "Rotated the certificate manually, fixed the rotation job permissions, and added an expiry alert at 14 days"
+  },
+  {
+    "id": "NEW-09",
+    "date": "2026-09-11",
+    "service": "search-indexer",
+    "alert": "search-indexer: requests failing shortly after a release",
+    "logs": "2026-09-11T08:18:10Z search-indexer-node-1 INFO service startup health check completed successfully\n2026-09-11T08:19:21Z search-indexer-node-2 ERROR request handler initialization did not complete correctly\n2026-09-11T08:20:32Z search-indexer-node-3 WARN newly started instance returned an application error\n2026-09-11T08:21:43Z search-indexer-node-4 ERROR request failed with internal service error",
+    "truth_family": "bad_config",
+    "truth_root_cause": "A release went out with a missing or misnamed environment variable, so the service started with a broken configuration",
+    "truth_fix": "Rolled back to the previous release and corrected the variable in the Helm values before redeploying"
+  },
+  {
+    "id": "NEW-10",
+    "date": "2026-09-20",
+    "service": "notification-service",
+    "alert": "notification-service: newly started instances returning request errors",
+    "logs": "2026-09-20T08:19:10Z notification-service-node-1 INFO service startup health check completed successfully\n2026-09-20T08:20:21Z notification-service-node-2 ERROR request handler initialization did not complete correctly\n2026-09-20T08:21:32Z notification-service-node-3 WARN newly started instance returned an application error\n2026-09-20T08:22:43Z notification-service-node-4 ERROR request failed with internal service error",
+    "truth_family": "bad_config",
+    "truth_root_cause": "A release went out with a missing or misnamed environment variable, so the service started with a broken configuration",
+    "truth_fix": "Rolled back to the previous release and corrected the variable in the Helm values before redeploying"
+  }
+]

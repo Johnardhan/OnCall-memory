@@ -1,0 +1,32 @@
+[
+  {
+    "memory_size": 0,
+    "evaluated": 10,
+    "hits": 0,
+    "hit_rate": 0.0
+  },
+  {
+    "memory_size": 10,
+    "evaluated": 10,
+    "hits": 9,
+    "hit_rate": 90.0
+  },
+  {
+    "memory_size": 20,
+    "evaluated": 10,
+    "hits": 10,
+    "hit_rate": 100.0
+  },
+  {
+    "memory_size": 30,
+    "evaluated": 10,
+    "hits": 10,
+    "hit_rate": 100.0
+  },
+  {
+    "memory_size": 40,
+    "evaluated": 10,
+    "hits": 10,
+    "hit_rate": 100.0
+  }
+]
